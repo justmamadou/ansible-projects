@@ -1,0 +1,24 @@
+---
+- name : Create EC2 Instances
+  hosts: localhost
+  connection: local 
+  become: yes
+
+  tasks:
+  - name: Launch 3 EC2 Instances
+    amazon.aws.ec2_instance:
+      name: "{{ item.name }}"
+      key_name: "loginKey"
+      instance_type: t2.micro
+      security_group: default
+      aws_access_key : "{{ aws_access_key }}"
+      aws_secret_key : "{{ aws_secret_key }}"
+      network_interfaces:
+        - assign_public_ip: true
+      image_id: "{{ item.image_id }}"
+      tags:
+        Environment: Testing
+    loop:
+     - { image_id: "ami-063d43db0594b521b", name: "managed-node1"}
+     - { image_id: "ami-0866a3c8686eaeeba", name: "managed-node2"}
+     - { image_id: "ami-0866a3c8686eaeeba", name: "managed-node3"}
